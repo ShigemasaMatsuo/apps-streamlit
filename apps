@@ -1,0 +1,960 @@
+import requests
+from datetime import datetime
+from datetime import timedelta
+import random
+import streamlit as st
+import pandas as pd
+
+from altair import JsonDataFormat
+import json
+import urllib.parse
+from PIL import Image
+from googletrans import Translator
+
+
+#▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+def main():
+    st.sidebar.header("Apps")
+    selected_box = st.sidebar.selectbox(
+    'Choose one of the following',
+    ("Release Note", "Music","Weather Travel", "Songs on Youtube")
+    )
+
+    if selected_box == "Release Note":
+        release_note() 
+    elif selected_box == "Music":
+        music()
+    elif selected_box == "Weather Travel":
+        weather_travel()
+    elif selected_box == "Songs on Youtube":
+        songs()
+        
+#▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+#■■■release_note■■■■■■■■■■■■■■■■■■■■■■■■■■■
+def release_note():
+    st.subheader('Release Note')
+    #====================================
+    with st.expander('Music'):
+        col1, col2, col3 = st.columns((1.3,1.0,7.7))
+    with col1: 
+        st.write("2023-10-04")
+        st.write("2023-10-05")
+        st.write("2023-10-10")
+        st.write("2023-10-11")
+        st.write("2023--")
+    with col2: #バージョン
+        st.write("ver1.00")
+        st.write("ver1.02")
+        st.write("ver1.03")
+        st.write("ver1.04")
+        st.write("ver1.05")
+    with col3: 
+        st.write("Release")
+        st.write("空欄エラー処理＆通常エラー処理修正")
+        st.write("googletrans搭載（日本語の文でもエラーにならないよう翻訳）")
+        st.write("リリースNote掲載")
+        st.write("Apps ver1.00に移行")
+
+    #====================================
+    with st.expander('Weather/Travel'):
+        col1, col2, col3 = st.columns((1.3,1.0,7.7))
+    with col1: 
+        st.write("2023-10-04")
+        st.write("")
+        st.write("")
+        st.write("")
+    with col2: 
+        st.write("ver1.00")
+        st.write("")
+        st.write("")
+        st.write("")
+    with col3: 
+        st.write("Release on Apps ver1.00")
+        st.write("")
+        st.write("")
+        st.write("")        
+
+    #====================================
+    with st.expander('Songs on Youtube'):
+        col1, col2, col3 = st.columns((1.3,1.0,7.7))
+    with col1: 
+        st.write("2023-10-04")
+        st.write("")
+        st.write("")
+        st.write("")
+    with col2: 
+        st.write("ver1.00")
+        st.write("")
+        st.write("")
+        st.write("")
+    with col3: 
+        st.write("Release on Apps ver1.00")
+        st.write("")
+        st.write("")
+        st.write("")   
+
+
+#■■■music■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+def music():
+    st.subheader('Music')
+
+    #===Mix cloud API=========================
+    def hit_API():
+        url = "https://api.mixcloud.com/search/?type=cloudcast&q={}".format(name)
+        header= {"content-type": "application/json"}
+        response = requests.get(url, headers=header)
+        jsonData1 = response.json()
+        return jsonData1
+    
+    #===translate from JP to EN=========================
+    def transJP_EN():
+        translator = Translator()
+        text_ja = inputText_feelings
+        text_en = translator.translate(text_ja, src='ja', dest='en').text
+        return text_en
+
+    #===Json parse=========================
+    def parse_release():
+        st.markdown("---") 
+        #1===APIresult song1=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][0]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][0]["name"])
+            st.write("👤" + jsonData["data"][0]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][0]["play_count"]) + " ⏱" + str(jsonData["data"][0]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][0]["url"]))
+        st.markdown("---") 
+        #2===APIresult song2=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][1]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][1]["name"])
+            st.write("👤" + jsonData["data"][1]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][1]["play_count"]) + " ⏱" + str(jsonData["data"][1]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][1]["url"]))
+        st.markdown("---") 
+        #3===APIresult song3=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][2]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][2]["name"])
+            st.write("👤" + jsonData["data"][2]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][2]["play_count"]) + " ⏱" + str(jsonData["data"][2]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][2]["url"]))
+        st.markdown("---") 
+        #4===APIresult song4=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][3]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][3]["name"])
+            st.write("👤" + jsonData["data"][3]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][3]["play_count"]) + " ⏱" + str(jsonData["data"][3]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][3]["url"]))
+        st.markdown("---") 
+        #5===APIresult song5=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][4]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][4]["name"])
+            st.write("👤" + jsonData["data"][4]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][4]["play_count"]) + " ⏱" + str(jsonData["data"][4]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][4]["url"]))
+        st.markdown("---") 
+        #6===APIresult song6=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][5]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][5]["name"])
+            st.write("👤" + jsonData["data"][5]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][5]["play_count"]) + " ⏱" + str(jsonData["data"][5]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][5]["url"]))
+        st.markdown("---") 
+        #7===APIresult song7=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][6]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][6]["name"])
+            st.write("👤" + jsonData["data"][6]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][6]["play_count"]) + " ⏱" + str(jsonData["data"][6]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][6]["url"]))
+        st.markdown("---") 
+        #8===APIresult song8=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][7]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][7]["name"])
+            st.write("👤" + jsonData["data"][7]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][7]["play_count"]) + " ⏱" + str(jsonData["data"][7]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][7]["url"]))
+        st.markdown("---") 
+        #9===APIresult song9=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][8]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][8]["name"])
+            st.write("👤" + jsonData["data"][8]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][8]["play_count"]) + " ⏱" + str(jsonData["data"][8]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][8]["url"]))
+        st.markdown("---") 
+        #10===APIresult song10=========================
+        col1, col2 = st.columns((1.3,7.7))
+        with col1:
+            st.image(jsonData["data"][9]["pictures"]["medium_mobile"])
+        with col2:
+            st.write("🎵" + jsonData["data"][9]["name"])
+            st.write("👤" + jsonData["data"][9]["user"]["name"])
+            st.write("🎧" + str(jsonData["data"][9]["play_count"]) + " ⏱" + str(jsonData["data"][9]["audio_length"]//60) + " mins")
+            st.write(urllib.parse.unquote(jsonData["data"][9]["url"]))
+        st.markdown("---") 
+        #============================================
+        st.write("☺That's all☺")
+        
+
+    #====================================
+    #st.title("Mix Cloud Music API") 
+    #st.header("") 
+
+    #====================================
+    inputText_feelings = st.text_input(label='今日の気分は？', value='')
+    inputlen = len(inputText_feelings)
+    name=urllib.parse.quote(inputText_feelings)
+
+    #====================================
+    button = st.button("Click me")
+
+
+
+    #===execute button=================================
+    if button:
+        jsonData = hit_API()
+    
+    #===error exception================================
+        try: 
+            x=jsonData["data"][0]["pictures"]["medium_mobile"]
+        except KeyError:
+            st.write("(。´･ω･)??　キーワードを入力してから実行してね。")
+            pass
+        except IndexError:
+            name = transJP_EN()
+            jsonData = hit_API()
+            parse_release()
+        
+        else:
+    #===================================
+            lenjson = len(jsonData)
+            if lenjson < 2:
+                name = transJP_EN()
+                jsonData = hit_API()
+                parse_release()
+
+        #===normal operation================================
+            else:
+                parse_release()
+        
+
+
+
+
+#■■■weather_travel■■■■■■■■■■■■■■■■■■■■■■■■■■■
+def weather_travel():
+    st.subheader('Weather/Travel')
+
+    #===geojs API===========================================
+    def geojs_API():
+        geo_request_url = "https://get.geojs.io/v1/ip/geo.json"
+        geodata = requests.get(geo_request_url).json()
+        latitude=geodata["latitude"]
+        longitude=geodata["longitude"]
+        return latitude, longitude
+
+    #===weatherAPI with latitude&longitude============
+    def weatherAPI_current():
+        weather_request_url = "http://api.weatherapi.com/v1/current.json?key=ed44da5ef31149198b364255230410&q={}&aqi=no&lang={}".format(latitude +"," + longitude,langtype)
+        weatherdata = requests.get(weather_request_url).json()
+        #=============
+        city = weatherdata["location"]["name"]
+        region = weatherdata["location"]["region"]
+        country = weatherdata["location"]["country"]
+        time = weatherdata["location"]["localtime"]
+        tempresult = weatherdata["current"]["temp_c"]
+        weathericon = "https:" + weatherdata["current"]["condition"]["icon"]
+        return city, region, country, time, tempresult, weathericon
+
+    #===wikipediaMain API===========================================
+    def wiki():
+        wiki_request_url = "https://{}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles={}".format(langtype, cityname)
+        wikidata = requests.get(wiki_request_url).json()
+        wikisummary=wikidata["query"]["pages"][str(pageid)]["extract"]
+        return wikisummary
+
+
+    #===wikipediaAPI for latitude&longitude EN===========================================
+    def wikigeo():
+        wikigeo_request_url = "https://en.wikipedia.org/w/api.php?format=json&action=query&formatversion=2&prop=coordinates&titles={}".format(cityname)
+        wikigeodata = requests.get(wikigeo_request_url).json()
+        wikigeolat=wikigeodata["query"]["pages"][0]["coordinates"][0]["lat"]
+        wikigeolon=wikigeodata["query"]["pages"][0]["coordinates"][0]["lon"]
+        return wikigeolat, wikigeolon
+
+    #===wikipediaAPI for latitude&longitude JP===========================================
+    def wikigeoJP():
+        wikigeoJP_request_url = "https://en.wikipedia.org/w/api.php?format=json&action=query&formatversion=2&prop=coordinates&titles={}".format(cityname1)
+        wikigeoJPdata = requests.get(wikigeoJP_request_url).json()
+        wikigeoJPlat=wikigeoJPdata["query"]["pages"][0]["coordinates"][0]["lat"]
+        wikigeoJPlon=wikigeoJPdata["query"]["pages"][0]["coordinates"][0]["lon"]
+        return wikigeoJPlat, wikigeoJPlon
+
+
+    #===wikipedia Summary API===========================================
+    def wiki_id():
+        wikiid_request_url = "https://{}.wikipedia.org/api/rest_v1/page/summary/{}".format(langtype, cityname)
+        wikiiddata = requests.get(wikiid_request_url).json()
+        pageid=wikiiddata["pageid"]
+        wikiurl=wikiiddata["content_urls"]["desktop"]["page"]
+        wikithumnail=wikiiddata["thumbnail"]["source"]
+        wikidesc=wikiiddata["description"]
+        return pageid, wikiurl, wikithumnail, wikidesc
+
+    #===weatherAPI for random city===========================================
+    def weatherAPI_city():
+        wheather_request_url2 = "http://api.weatherapi.com/v1/current.json?key=ed44da5ef31149198b364255230410&q={}&aqi=no&lang={}".format(cityname, langtype)
+        wheatherdata2 = requests.get(wheather_request_url2).json()
+        #=============
+        tempresult2 = wheatherdata2["current"]["temp_c"]
+        weathericon2 = "https:" + wheatherdata2["current"]["condition"]["icon"]
+        time2 = wheatherdata2["location"]["localtime"]
+        city2 = wheatherdata2["location"]["name"]
+        country2 = wheatherdata2["location"]["country"]
+        return  tempresult2, weathericon2, time2, city2, country2
+
+    #===Airport code definition===========================================
+    def aireport_code():
+        if cityname == "Ankara" or cityname == "アンカラ":
+            dest = "esb"
+            return dest
+        elif cityname == "Beijing" or cityname == "北京市":
+            dest = "bjsa"
+            return dest
+        elif cityname == "Brasília" or cityname == "ブラジリア":
+            dest = "bsb"
+            return dest    
+        elif cityname == "Windhoek"or cityname == "ウィントフック":
+            dest = "wdha"
+            return dest
+        elif cityname == "Ulaanbaatar"or cityname == "ウランバートル":
+            dest = "ubn"
+            return dest    
+        elif cityname == "Hanoi"or cityname == "ハノイ":
+            dest = "han"
+            return dest    
+        elif cityname == "Pyongyang"or cityname == "平壌直轄市":
+            dest = "fnj"
+            return dest    
+        elif cityname == "Cairo"or cityname == "カイロ":
+            dest = "cai"
+            return dest    
+        elif cityname == "Ottawa"or cityname == "オタワ":
+            dest = "yowa"
+            return dest    
+        elif cityname == "Lima":
+            dest = "lim"
+            return dest    
+        elif cityname == "Khartoum"or cityname == "ハルツーム":
+            dest = "krt"
+            return dest    
+        elif cityname == "Dar es Salaam"or cityname == "ダルエスサラーム":
+            dest = "dar"
+            return dest    
+        elif cityname == "Yamoussoukro"or cityname == "ヤムスクロ":
+            dest = "abj"
+            return dest    
+        elif cityname == "Dodoma"or cityname == "ドドマ":
+            dest = "dod"
+            return dest    
+        elif cityname == "Moscow"or cityname == "モスクワ":
+            dest = "mosc"
+            return dest    
+        elif cityname == "Baku"or cityname == "バクー":
+            dest = "gyd"
+            return dest    
+        elif cityname == "Abidjan"or cityname == "アビジャン":
+            dest = "abj"
+            return dest    
+        elif cityname == "Suva":
+            dest = "suv"
+            return dest    
+        elif cityname == "Riyadh"or cityname == "リヤド":
+            dest = "ruh"
+            return dest    
+        elif cityname == "Sucre"or cityname == "スクレ (ボリビア)":
+            dest = "sre"
+            return dest    
+        elif cityname == "Amman"or cityname == "アンマン":
+            dest = "amma"
+            return dest    
+        elif cityname == "Bogotá"or cityname == "ボゴタ":
+            dest = "bog"
+            return dest    
+        elif cityname == "London"or cityname == "ロンドン":
+            dest = "lond"
+            return dest    
+        elif cityname == "Bangkok"or cityname == "バンコク":
+            dest = "bkkt"
+            return dest    
+        elif cityname == "Tripoli, Libya"or cityname == "トリポリ":
+            dest = "mji"
+            return dest    
+        elif cityname == "Tegucigalpa"or cityname == "テグシガルパ":
+            dest = "tgu"
+            return dest    
+        elif cityname == "Mexico City"or cityname == "メキシコシティ":
+            dest = "mexa"
+            return dest    
+        elif cityname == "Rome"or cityname == "ローマ":
+            dest = "rome"
+            return dest    
+        elif cityname == "Tehran"or cityname == "テヘラン":
+            dest = "thra"
+            return dest    
+        elif cityname == "Nouakchott"or cityname == "ヌアクショット":
+            dest = "nkc"
+            return dest    
+        elif cityname == "Abu Dhabi"or cityname == "アブダビ市":
+            dest = "auh"
+            return dest    
+        elif cityname == "Harare"or cityname == "ハラレ":
+            dest = "hre"
+            return dest    
+        elif cityname == "Cetinje"or cityname == "ツェティニェ":
+            dest = "tgd"
+            return dest    
+        elif cityname == "Berlin"or cityname == "ベルリン":
+            dest = "ber"
+            return dest    
+        elif cityname == "Kyiv"or cityname == "キーウ":
+            dest = "kiev"
+            return dest    
+        elif cityname == "Canberra"or cityname == "キャンベラ":
+            dest = "cbr"
+            return dest    
+        elif cityname == "Astana"or cityname == "アスタナ":
+            dest = "nqz"
+            return dest    
+        elif cityname == "Aden"or cityname == "アデン":
+            dest = "ade"
+            return dest    
+        elif cityname == "Kigali"or cityname == "キガリ":
+            dest = "kgl"
+            return dest    
+        elif cityname == "Havana"or cityname == "ハバナ":
+            dest = "hav"
+            return dest    
+        elif cityname == "Lilongwe"or cityname == "リロングウェ":
+            dest = "llw"
+            return dest    
+        elif cityname == "Helsinki"or cityname == "ヘルシンキ":
+            dest = "hel"
+            return dest    
+        elif cityname == "Abuja"or cityname == "アブジャ":
+            dest = "abv"
+            return dest    
+        elif cityname == "Nairobi"or cityname == "ナイロビ":
+            dest = "nboa"
+            return dest    
+        elif cityname == "Nuuk"or cityname == "ヌーク":
+            dest = "goh"
+            return dest    
+        elif cityname == "Pretoria"or cityname == "プレトリア":
+            dest = "pry"
+            return dest    
+        elif cityname == "Phnom Penh"or cityname == "プノンペン":
+            dest = "pnh"
+            return dest    
+        elif cityname == "Baghdad"or cityname == "バグダード":
+            dest = "bgw"
+            return dest    
+        elif cityname == "Jakarta"or cityname == "ジャカルタ":
+            dest = "cgki"
+            return dest    
+        
+    #===cityname trans to EN===========================================
+    def cityname_trans():
+        
+        if cityname == "アンカラ":
+            cityname1 = "Ankara"
+            return cityname1
+        elif cityname == "北京市":
+            cityname1 = "Beijing"
+            return cityname1
+        elif cityname == "ブラジリア":
+            cityname1 = "Brasília"
+            return cityname1
+        elif cityname == "ウィントフック":
+            cityname1 = "Windhoek"
+            return cityname1
+        elif cityname == "ウランバートル":
+            cityname1 = "Ulaanbaatar"
+            return cityname1
+        elif cityname == "ハノイ":
+            cityname1 = "Hanoi"
+            return cityname1
+        elif cityname == "平壌直轄市":
+            cityname1 = "Pyongyang"
+            return cityname1
+        elif cityname == "カイロ":
+            cityname1 = "Cairo"
+            return cityname1
+        elif cityname == "オタワ":
+            cityname1 = "Ottawa"
+            return cityname1
+        elif cityname == "ハルツーム":
+            cityname1 = "Khartoum"
+            return cityname1
+        elif cityname == "ダルエスサラーム":
+            cityname1 = "Dar es Salaam"
+            return cityname1
+        elif cityname == "ヤムスクロ":
+            cityname1 = "Yamoussoukro"
+            return cityname1
+        elif cityname == "ドドマ":
+            cityname1 = "Dodoma"
+            return cityname1
+        elif cityname == "モスクワ":
+            cityname1 = "Moscow" 
+            return cityname1
+        elif cityname == "バクー":
+            cityname1 = "Baku"
+            return cityname1
+        elif cityname == "アビジャン":
+            cityname1 = "Abidjan"
+            return cityname1
+        elif cityname == "リヤド":
+            cityname1 = "Riyadh"
+            return cityname1
+        elif cityname == "スクレ (ボリビア)":
+            cityname1 = "Sucre"
+            return cityname1
+        elif cityname == "アンマン":
+            cityname1 = "Amman"
+            return cityname1
+        elif cityname == "ボゴタ":
+            cityname1 = "Bogotá"
+            return cityname1
+        elif cityname == "ロンドン":
+            cityname1 = "London"
+            return cityname1
+        elif cityname == "バンコク":
+            cityname1 = "Bangkok"
+            return cityname1
+        elif cityname == "トリポリ":
+            cityname1 = "Tripoli, Libya"
+            return cityname1
+        elif cityname == "テグシガルパ":
+            cityname1 = "Tegucigalpa"
+            return cityname1
+        elif cityname == "メキシコシティ":
+            cityname1 = "Mexico City" 
+            return cityname1
+        elif cityname == "ローマ":
+            cityname1 = "Rome"
+            return cityname1
+        elif cityname == "テヘラン":
+            cityname1 = "Tehran"
+            return cityname1
+        elif cityname == "ヌアクショット":
+            cityname1 = "Nouakchott"
+            return cityname1
+        elif cityname == "アブダビ市":
+            cityname1 = "Abu Dhabi"
+            return cityname1
+        elif cityname == "ハラレ":
+            cityname1 = "Harare"
+            return cityname1
+        elif cityname == "ツェティニェ":
+            cityname1 = "Cetinje"
+            return cityname1
+        elif cityname == "ベルリン":
+            cityname1 = "Berlin"
+            return cityname1
+        elif cityname == "キーウ":
+            cityname1 = "Kyiv"
+            return cityname1
+        elif cityname == "キャンベラ":
+            cityname1 = "Canberra"
+            return cityname1
+        elif cityname == "アスタナ":
+            cityname1 = "Astana"
+            return cityname1
+        elif cityname == "アデン":
+            cityname1 = "Aden"
+            return cityname1
+        elif cityname == "キガリ":
+            cityname1 = "Kigali"
+            return cityname1
+        elif cityname == "ハバナ":
+            cityname1 = "Havana"
+            return cityname1
+        elif cityname == "リロングウェ":
+            cityname1 = "Lilongwe"
+            return cityname1
+        elif cityname == "ヘルシンキ":
+            cityname1 = "Helsinki"
+            return cityname1
+        elif cityname == "アブジャ":
+            cityname1 = "Abuja"  
+            return cityname1
+        elif cityname == "ナイロビ":
+            cityname1 = "Nairobi"
+            return cityname1
+        elif cityname == "ヌーク":
+            cityname1 = "Nuuk"
+            return cityname1
+        elif cityname == "プレトリア":
+            cityname1 = "Pretoria"
+            return cityname1
+        elif cityname == "プノンペン":
+            cityname1 = "Phnom Penh"
+            return cityname1
+        elif cityname == "バグダード":
+            cityname1 = "Baghdad"
+            return cityname1
+        elif cityname == "ジャカルタ":
+            cityname1 = "Jakarta"
+            return cityname1
+        
+        
+
+    #▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
+    #===================================================
+    col1, col2, col3, col4 = st.columns([2,3.5,2,2.5])
+    with col1:
+        langradio = st.radio("language",["EN","JP"], horizontal=True)
+    with col2:
+        st.write("")
+        button = st.button("Explore")
+
+    #===execute button=====================================
+    if button:
+        if langradio == "EN":
+            
+            langtype="en"
+            geojs_result = geojs_API()
+            latitude = geojs_result[0]
+            longitude = geojs_result[1]
+
+            wetherEN_result = weatherAPI_current()
+            city = wetherEN_result[0]
+            region = wetherEN_result[1]
+            country = wetherEN_result[2]
+            time = wetherEN_result[3]
+            tempresult = wetherEN_result[4]
+            weathericon = wetherEN_result[5]
+
+        #=========================
+            with col3:
+                st.write(time)
+                st.image(weathericon, width=32)
+            with col4:
+                st.write(city + "/" + country)
+                st.write(str(tempresult) + "℃")
+
+
+            st.markdown("---")    
+
+        #===random City array===========================================
+            citylist=["Ankara","Beijing","Brasília","Windhoek","Ulaanbaatar","Hanoi","Pyongyang","Cairo","Ottawa", \
+                    "Lima","Khartoum","Dar es Salaam","Yamoussoukro","Dodoma","Moscow","Baku","Abidjan","Suva","Riyadh", \
+                    "Sucre","Amman","Bogotá","London","Bangkok","Tripoli, Libya","Tegucigalpa","Mexico City","Rome","Tehran", \
+                    "Nouakchott","Abu Dhabi","Harare","Cetinje","Berlin","Kyiv","Canberra","Astana","Aden","Kigali", \
+                    "Havana","Lilongwe","Helsinki","Abuja","Nairobi","Nuuk","Pretoria","Phnom Penh","Baghdad","Jakarta", \
+                    ]
+            
+            cityname=random.choice(citylist)
+
+
+
+        #===generate SkyScanner URL===========================================
+        #date 7days&14days from today
+            td = timedelta(days=7)
+            day = datetime.now()
+            date = day.date()
+            oneweek = date + td
+            twoweek =  date + td + td
+        #origin
+            ori = "tyoa"
+        #destination
+            dest = aireport_code()
+        #generate SkyScanner URL
+            skyscannerURL = "https://www.skyscanner.jp/transport/flights/{}/{}/{}/{}/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27542089&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1&locale=en-US".format(ori,dest,oneweek,twoweek)
+
+        #====================================
+            wiki_id_EN_result = wiki_id()
+            pageid = wiki_id_EN_result[0]
+            wikiurl = wiki_id_EN_result[1]
+            wikithumnail = wiki_id_EN_result[2]
+
+            wikisummary = wiki()
+            
+            weatherAPI_EN_city_result = weatherAPI_city()
+            tempresult2 = weatherAPI_EN_city_result[0]
+            weathericon2 = weatherAPI_EN_city_result[1]
+            time2 = weatherAPI_EN_city_result[2]
+            city2 = weatherAPI_EN_city_result[3]
+            country2 = weatherAPI_EN_city_result[4]
+
+            wikigeodata = wikigeo()
+            wikigeolat = wikigeodata[0]
+            wikigeolon= wikigeodata[1]
+
+        #===generate googleMap URL for random city===========================================
+            googlecity = cityname.replace(" ", "")
+            googlecountry = country2.replace(" ", "")
+            googlemapurl="https://www.google.com/maps/search/?api=1&query={}".format(googlecity + "/" + googlecountry)
+            
+        #=========================
+            col1, col2, col3 = st.columns([2,4.2,3.8])
+            with col1:
+                st.write(time2)
+                st.image(weathericon2, width=60)
+                st.write("📖[wikipedia]({})".format(wikiurl))
+                st.write("🗺[Google Map]({})".format(googlemapurl))
+            with col2:
+                st.write(cityname + "/" + country2)
+                st.write("")
+                st.write(str(tempresult2) + "℃")
+                st.write("")
+                st.write("🛫[Skyscanner]({})".format(skyscannerURL))
+            with col3:
+                st.image(wikithumnail, width=250)
+
+            st.text_area("wikipedia summary", wikisummary, height=300)
+            data = pd.DataFrame({
+                'latitude': [float(latitude), float(wikigeolat)],
+                'longitude': [float(longitude), float(wikigeolon)]
+                })
+            st.map(data, zoom=1, size=200000)
+
+
+        #◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+
+        else:
+            langtype="ja"
+
+            geojs_result = geojs_API()
+            latitude = geojs_result[0]
+            longitude = geojs_result[1]
+
+            wetherJP_result = weatherAPI_current()
+            city = wetherJP_result[0]
+            region = wetherJP_result[1]
+            country = wetherJP_result[2]
+            time = wetherJP_result[3]
+            tempresult = wetherJP_result[4]
+            weathericon = wetherJP_result[5]
+
+        #=========================
+            with col3:
+                st.write(time)
+                st.image(weathericon, width=40)
+            with col4:
+                st.write(city + "/" + country)
+                st.write(str(tempresult) + "℃")
+                
+            st.markdown("---")    
+
+        #===random City array===========================================
+            citylist=["アンカラ","北京市","ブラジリア","ウィントフック","ウランバートル","ハノイ","平壌直轄市","カイロ","オタワ", \
+                    "ハルツーム","ダルエスサラーム","ヤムスクロ","ドドマ","モスクワ","バクー","アビジャン","リヤド", \
+                    "スクレ (ボリビア)","アンマン","ボゴタ","ロンドン","バンコク","トリポリ","テグシガルパ","メキシコシティ","ローマ","テヘラン", \
+                    "ヌアクショット","アブダビ市","ハラレ","ツェティニェ","ベルリン","キーウ","キャンベラ","アスタナ","アデン","キガリ", \
+                    "ハバナ","リロングウェ","ヘルシンキ","アブジャ","ナイロビ","ヌーク","プレトリア","プノンペン","バグダード","ジャカルタ", \
+                    ]
+
+            cityname=random.choice(citylist)
+
+        #===generate SkyScanner URL===========================================
+        #date 7days&14days from today
+            td = timedelta(days=7)
+            day = datetime.now()
+            date = day.date()
+            oneweek = date + td
+            twoweek =  date + td + td
+        
+        #origin
+            ori = "tyoa"
+        #destination
+            dest = aireport_code()
+
+        #generate SkyScanner URL
+            skyscannerURL = "https://www.skyscanner.jp/transport/flights/{}/{}/{}/{}/?adults=1&adultsv2=1&cabinclass=economy&children=0&childrenv2=&inboundaltsenabled=false&infants=0&originentityid=27542089&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=1&locale=ja-JP".format(ori,dest,oneweek,twoweek)
+
+        #====================================
+            wiki_id_JP_result = wiki_id()
+            pageid = wiki_id_JP_result[0]
+            wikiurl = wiki_id_JP_result[1]
+            wikithumnail = wiki_id_JP_result[2]
+            wikidesc = wiki_id_JP_result[3]
+
+            wikisummary = wiki()
+            
+            weatherAPI_JP_city_result = weatherAPI_city()
+            tempresult2 = weatherAPI_JP_city_result[0]
+            weathericon2 = weatherAPI_JP_city_result[1]
+            time2 = weatherAPI_JP_city_result[2]
+            city2 = weatherAPI_JP_city_result[3]
+            country2 = weatherAPI_JP_city_result[4]
+
+            cityname1 = cityname_trans()
+
+            wikigeoJPdata = wikigeoJP()
+            wikigeoJPlat = wikigeoJPdata[0]
+            wikigeoJPlon= wikigeoJPdata[1]
+
+        #===generate googleMap URL for random city===========================================
+            googlecity = cityname.replace(" ","")
+            googlecountry = wikidesc.replace(" ","")
+            if cityname == "ロンドン":
+                googlecountry = "イギリス"
+            elif cityname == "ドドマ":
+                googlecountry = "タンザニア"
+            elif cityname == "スクレ (ボリビア)":
+                googlecountry = "ボリビア"
+
+            googlemapurl="https://www.google.com/maps/search/?api=1&query={}".format(googlecity + "/" + googlecountry)
+            
+
+        #=========================
+            col1, col2, col3 = st.columns([2,4.2,3.8])
+            with col1:
+                st.write(time2)
+                st.image(weathericon2, width=60)
+                st.write("📖[wikipedia]({})".format(wikiurl))
+                st.write("🗺[Google Map]({})".format(googlemapurl))
+            with col2:
+                st.write(cityname + " (" + wikidesc + ")")
+                st.write("")
+                st.write(str(tempresult2) + "℃")
+                st.write("")
+                st.write("🛫[Skyscanner]({})".format(skyscannerURL))
+            with col3:
+                st.image(wikithumnail, width=250)
+
+            st.text_area("wikipedia summary", wikisummary, height=250)
+
+            data = pd.DataFrame({
+                'latitude': [float(latitude), float(wikigeoJPlat)],
+                'longitude': [float(longitude), float(wikigeoJPlon)]
+                })
+            st.map(data, zoom=1, size=200000)
+            
+
+
+
+#■■■songs■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+def songs():
+    st.subheader('Songs on Youtube')    
+    
+    videolist = [1,2,3,4,5,6,7,8,9,10]
+
+    #==========================================
+    video1_URL = "https://www.youtube.com/watch?v=XLLiYBwb4rY"
+    video1_Title = "AFJB - DENGEKI feat.kZm(Official Music Video)"
+
+    video2_URL = "https://www.youtube.com/watch?v=jnXCF2PKGjM"
+    video2_Title = "toe - everything means nothing"
+
+    video3_URL = "https://www.youtube.com/watch?v=thfY91Edem0"
+    video3_Title = "Craig David - Hidden Agenda (Official Video)"
+
+    video4_URL = "https://www.youtube.com/watch?v=xV7nHX2RLjQ"
+    video4_Title = "Too Many Zooz - Car Alarm (Official Video)"
+
+    video5_URL = "https://www.youtube.com/watch?v=TChJ2n-3rz4"
+    video5_Title = "Paledusk / RUMBLE feat. Masato from coldrain (Official Music Video)"
+
+    video6_URL = "https://www.youtube.com/watch?v=pnISpahN2dM"
+    video6_Title = "Hiromi: Tiny Desk Concert"
+
+    video7_URL = "https://www.youtube.com/watch?v=fSKQRDq3RkM"
+    video7_Title = "blink-182 - ONE MORE TIME (Official Video)"
+
+    video8_URL = "https://www.youtube.com/watch?v=0fn1jEjX5PA"
+    video8_Title = "Chunk! No, Captain Chunk! - All Star"
+
+    video9_URL = "https://www.youtube.com/watch?v=wx-zL16OUJw"
+    video9_Title = "Lucky Chops - Problem (Ariana Grande Cover)"
+
+    video10_URL = "https://www.youtube.com/watch?v=ZsDUXo5TcZY"
+    video10_Title = "Hot 8 Brass Band - 'Sexual Healing (Official Video)' [Marvin Gaye Cover]"
+
+    #==========================================
+    button = st.button("Watch?")
+
+    if button:
+        video=random.choice(videolist)
+        
+        if video == 1:
+            st.write("")
+            st.write(video1_Title)
+            st.video(video1_URL)
+            
+        elif video == 2:
+            st.write("")
+            st.write(video2_Title)
+            st.video(video2_URL)
+
+        elif video == 3:
+            st.write("")
+            st.write(video3_Title)
+            st.video(video3_URL)
+
+        elif video == 4:
+            st.write("")
+            st.write(video4_Title)
+            st.video(video4_URL)
+
+        elif video == 5:
+            st.write("")
+            st.write(video5_Title)
+            st.video(video5_URL)
+
+        elif video == 6:
+            st.write("")
+            st.write(video6_Title)
+            st.video(video6_URL)
+
+        elif video == 7:
+            st.write("")
+            st.write(video7_Title)
+            st.video(video7_URL)    
+        elif video == 8:
+            st.write("")
+            st.write(video8_Title)
+            st.video(video8_URL)
+            
+        elif video == 9:
+            st.write("")
+            st.write(video9_Title)
+            st.video(video9_URL)
+            
+        elif video == 10:
+            st.write("")
+            st.write(video10_Title)
+            st.video(video10_URL)    
+        
+
+#=======Top page===========================
+if __name__ == "__main__":
+    main()
