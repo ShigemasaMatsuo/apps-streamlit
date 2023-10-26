@@ -280,7 +280,7 @@ def weather_travel():
 
     #===weatherAPI with latitude&longitude============
     def weatherAPI_current():
-        weather_request_url = "http://api.weatherapi.com/v1/current.json?key=ed44da5ef31149198b364255230410&q={}&aqi=no&lang={}".format(latitude +"," + longitude,langtype)
+        weather_request_url = "http://api.weatherapi.com/v1/current.json?key=APIkey here&q={}&aqi=no&lang={}".format(latitude +"," + longitude,langtype)
         weatherdata = requests.get(weather_request_url).json()
         #=============
         city = weatherdata["location"]["name"]
@@ -328,7 +328,7 @@ def weather_travel():
 
     #===weatherAPI for random city===========================================
     def weatherAPI_city():
-        wheather_request_url2 = "http://api.weatherapi.com/v1/current.json?key=ed44da5ef31149198b364255230410&q={}&aqi=no&lang={}".format(cityname, langtype)
+        wheather_request_url2 = "http://api.weatherapi.com/v1/current.json?key=APIkey here&q={}&aqi=no&lang={}".format(cityname, langtype)
         wheatherdata2 = requests.get(wheather_request_url2).json()
         #=============
         tempresult2 = wheatherdata2["current"]["temp_c"]
